@@ -10,3 +10,5 @@ def horas_estudo():
     else:
         print(f"Ola,{nome} seu ritmo e intenso, isso e otimo!")
 horas_estudo()
+
+#BOM DEMAIS
