@@ -1,0 +1,19 @@
+main.py
+
+Pergunta algo ao usuário
+
+validators.py
+
+Confere se a entrada é válida
+
+main.py
+
+Monta a sessão
+
+file_manager.py
+
+Salva ou carrega os dados
+
+sessions.json
+
+Guarda tudo
