@@ -34,9 +34,9 @@ def lista_game():
         return
     for jogo in jogos:
         print("==========LISTA DE JOGOS =====")
-        print(f"Nome:{jogo['nome']},")
-        print(f"genero:{jogo['genero']},")
-        print(f"Plataforma:{jogo['plataforma']},")
+        print(f"Nome:{jogo['nome']}")
+        print(f"genero:{jogo['genero']}")
+        print(f"Plataforma:{jogo['plataforma']}")
         print(f"Nota:{jogo['nota']}")
 def menu():
     carregar_arquivo()
