@@ -1,8 +1,35 @@
 import os
 import sqlite3
-
 conexao = sqlite3.connect('sessoes.db')
+cursor = conexao.cursor()
+def carregar_dados(nome, assunto, dificuldade, horas):
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS usuarios (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    assunto TEXT,
+    nome TEXT NOT NULL,
+    dificuldade INTEGER,
+    horas INTEGER)
+    """)
+    conexao.commit()
+    cursor.execute("""
+    INSERT INTO usuarios (nome, assunto, dificuldade, horas)
+    VALUES (?, ?, ?, ?)
+    """, (nome,assunto,dificuldade, horas))
+    conexao.commit()
 
+def remover_dados(assunto):
+    cursor.execute(
+    "SELECT * FROM usuarios WHERE assunto = ?",
+    (assunto,)
+)
+
+    dados = cursor.fetchall()
+    print(dados)
+    cursor.execute(
+        "DELETE FROM usuarios WHERE assunto = ?", (assunto,)
+    )
+    conexao.commit()
 
 sessoes = []
 
@@ -11,7 +38,7 @@ def limpar_dados():
 
 def adicionar_sessao():
     #id: gerar id 
-    nome = input("Digite Seu nome: ")
+    nome = input("Digite Seu nome: ").strip()
     assunto = input("Qual assunto que gostaria de registrar: ")
     while True:
         try:
@@ -35,32 +62,28 @@ def adicionar_sessao():
     input('Aperte enter para continuar')
     sessoes.append(salvar)
     limpar_dados()
+    carregar_dados(nome, assunto, dificuldade, horas)
 #adicionar_sessao()
 
 def listar_sessoes():
-    if len(sessoes) == 0:
-        print("NENHUMA SESSAO CADASTRADA!")
+    cursor.execute("SELECT * FROM usuarios")
+    registros = cursor.fetchall()
+    if len(registros) == 0:
+        print("SEM SESSAO CADASTRADA!")
         return
-    
-    for sessao in sessoes:
-        print(f"Nome: {sessao['nome']}")
-        print(f"Assunto: {sessao['assunto']}")
-        print(f"Dificuldade: {sessao['dificuldade']}")
-        print(f"Horas estudadas: {sessao['horas']}")
-#listar_sessoes()
+    for r in registros:
+        print(f"ID: {r[0]} | Nome: {r[1]} | Assunto: {r[2]} | Dificuldade: {r[3]} | Horas: {r[4]}")
 
 def remover_sessao():
-    if len(sessoes) == 0:
-        print("NENHUMA SESSAO CADASTRADA!")
-        return  
-    
+    cursor.execute("SELECT * FROM usuarios")
+    registros = cursor.fetchall()
+    if len(registros) == 0:
+        print("SEM REGISTRO CADASTRADO!")
+        return
+    for r in registros:
+        print(f"ID: {r[0]} | Nome: {r[1]} | Assunto: {r[2]} | Dificuldade: {r[3]} | Horas: {r[4]}")
     buscar = input('Informe o assunto a ser removido: ')
-    for sessao in sessoes:
-        if buscar == sessao['assunto']:
-            print('foi removido')
-            sessoes.remove(sessao)
-        else:
-            print('Nenhuma sessão foi encontrada')
+    remover_dados(buscar)
     limpar_dados()
 
 #remover_sessao()
@@ -103,6 +126,7 @@ def atualizar_sessao():
 # atualizar_sessao()
 #limpar_dados()
 while True:
+    
     #limpar_dados()
     print('1 - Adicionar sessão')
     print('2 - Listar sessões')
