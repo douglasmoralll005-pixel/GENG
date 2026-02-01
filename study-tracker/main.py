@@ -1,28 +1,30 @@
 import os
 import sqlite3
+
 conexao = sqlite3.connect('sessoes.db')
 cursor = conexao.cursor()
+
 def carregar_dados(nome, assunto, dificuldade, horas):
     cursor.execute("""
-    CREATE TABLE IF NOT EXISTS usuarios (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    assunto TEXT,
-    nome TEXT NOT NULL,
-    dificuldade INTEGER,
-    horas INTEGER)
-    """)
+        CREATE TABLE IF NOT EXISTS usuarios (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        assunto TEXT,
+        nome TEXT NOT NULL,
+        dificuldade INTEGER,
+        horas INTEGER)
+        """
+    )
     conexao.commit()
     cursor.execute("""
-    INSERT INTO usuarios (nome, assunto, dificuldade, horas)
-    VALUES (?, ?, ?, ?)
-    """, (nome,assunto,dificuldade, horas))
+        INSERT INTO usuarios (nome, assunto, dificuldade, horas)
+        VALUES (?, ?, ?, ?)""", (nome,assunto,dificuldade, horas))
     conexao.commit()
 
 def remover_dados(assunto):
     cursor.execute(
-    "SELECT * FROM usuarios WHERE assunto = ?",
-    (assunto,)
-)
+        "SELECT * FROM usuarios WHERE assunto = ?",
+        (assunto,)
+    )
 
     dados = cursor.fetchall()
     print(dados)
@@ -52,18 +54,10 @@ def adicionar_sessao():
             print("COLOCAR DE 1 A 10")
 
     horas = 0
-    salvar = {
-        "nome":nome.strip(),
-        "assunto":assunto.strip(),
-        "dificuldade":dificuldade,
-        "horas":horas
-    }
     print('Sessão cadastrada com sucesso!')
     input('Aperte enter para continuar')
-    sessoes.append(salvar)
     limpar_dados()
     carregar_dados(nome, assunto, dificuldade, horas)
-#adicionar_sessao()
 
 def listar_sessoes():
     cursor.execute("SELECT * FROM usuarios")
@@ -85,9 +79,6 @@ def remover_sessao():
     buscar = input('Informe o assunto a ser removido: ')
     remover_dados(buscar)
     limpar_dados()
-
-#remover_sessao()
-#listar_sessoes()
 
 def atualizar_sessao():
     if len(sessoes) == 0:
@@ -121,13 +112,7 @@ def atualizar_sessao():
             print('não encontrou')
     limpar_dados()
     
-#listar_sessoes()
-#
-# atualizar_sessao()
-#limpar_dados()
 while True:
-    
-    #limpar_dados()
     print('1 - Adicionar sessão')
     print('2 - Listar sessões')
     print('3 - Remover sessão')
@@ -146,5 +131,5 @@ while True:
     elif opcao == '4':
         atualizar_sessao()
     else:
-        print('opcão invalida')
-        input('pressione enter para voltar')
+        print('Opcão invalida')
+        input('Pressione enter para voltar')
