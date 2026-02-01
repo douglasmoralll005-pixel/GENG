@@ -1,5 +1,5 @@
-import os
 import sqlite3
+from utils.limpa_tela import limpa_tela
 
 conexao = sqlite3.connect('sessoes.db')
 cursor = conexao.cursor()
@@ -35,9 +35,6 @@ def remover_dados(assunto):
 
 sessoes = []
 
-def limpar_dados():
-    os.system("cls" if os.name == "nt" else "clear")
-
 def adicionar_sessao():
     #id: gerar id 
     nome = input("Digite Seu nome: ").strip()
@@ -56,7 +53,7 @@ def adicionar_sessao():
     horas = 0
     print('Sessão cadastrada com sucesso!')
     input('Aperte enter para continuar')
-    limpar_dados()
+    limpa_tela()
     carregar_dados(nome, assunto, dificuldade, horas)
 
 def listar_sessoes():
@@ -78,7 +75,7 @@ def remover_sessao():
         print(f"ID: {r[0]} | Nome: {r[1]} | Assunto: {r[2]} | Dificuldade: {r[3]} | Horas: {r[4]}")
     buscar = input('Informe o assunto a ser removido: ')
     remover_dados(buscar)
-    limpar_dados()
+    limpa_tela()
 
 def atualizar_sessao():
     if len(sessoes) == 0:
@@ -110,7 +107,7 @@ def atualizar_sessao():
             sessao['hora'] = nova_hora
         else:
             print('não encontrou')
-    limpar_dados()
+    limpa_tela()
     
 while True:
     print('1 - Adicionar sessão')
@@ -131,5 +128,5 @@ while True:
     elif opcao == '4':
         atualizar_sessao()
     else:
-        print('Opcão invalida')
+        print('Opcão inválida')
         input('Pressione enter para voltar')

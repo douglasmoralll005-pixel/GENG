@@ -1,1 +1,2 @@
 1. Criado pasta study-tracker e movido arquivos do projeto para dentro
+2. Criado pasta utils e inserido funcao limpa_tela.py para limpar o CMD
