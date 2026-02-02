@@ -20,9 +20,21 @@ def remover_dados(assunto):
         "DELETE FROM usuarios WHERE assunto = ?", (assunto,)
     )
     conexao.commit()
-
-sessoes = []
-
+def atualizar_assunto(
+    novo_assunto,
+    novo_assunto1,
+    nova_dificuldade,
+    novas_horas
+):
+    comando.execute(
+        """
+        UPDATE usuarios
+        SET assunto = ?, dificuldade = ?, horas = ?
+        WHERE assunto = ?
+        """,
+        (novo_assunto1, nova_dificuldade, novas_horas, novo_assunto)
+    )
+    conexao.commit()
 def adicionar_sessao():
     #id: gerar id 
     nome = input("Digite Seu nome: ")
@@ -66,36 +78,56 @@ def remover_sessao():
     limpa_tela()
 
 def atualizar_sessao():
-    if len(sessoes) == 0:
-        print("NENHUMA SESSAO CADASTRADA!")
-        return   
-    buscar = input('Digite o assunto que deseja atualizar: ')
-    for sessao in sessoes:
-        if buscar == sessao['assunto']:
-            novo_assunto = input('Digite o novo assunto: ')
-            sessao['assunto'] = novo_assunto
+    comando.execute("SELECT * FROM usuarios")
+    registros = comando.fetchall()
+
+    if len(registros) == 0:
+        print("SEM REGISTRO CADASTRADO!")
+        return
+    listar_sessoes()
+    assunto_antigo = input("Digite o assunto que deseja atualizar: ")
+
+    for registro in registros:
+        if assunto_antigo == registro[2]:
+
+            novo_assunto = input("Digite o novo assunto: ")
+
+            # dificuldade
             while True:
                 try:
-                     nova_dificuldade = int(input("Qual a dificuldade do assunto adionado: [1 - 10]"))
+                    nova_dificuldade = int(input("Qual a dificuldade do assunto [1 - 10]: "))
+                    if 1 <= nova_dificuldade <= 10:
+                        break
+                    else:
+                        print("COLOCAR DE 1 A 10")
                 except ValueError:
-                    print ("colocar apenas numero!")
-                    continue
-                if nova_dificuldade > 0 and nova_dificuldade <=10:
-                    break
-                else:
-                    print("COLOCAR DE 1 A 10")
-            sessao['dificuldade'] = nova_dificuldade
+                    print("Colocar apenas número!")
+
+            # horas
             while True:
                 try:
                     nova_hora = int(input("Digite a quantidade de horas estudadas: "))
                     break
                 except ValueError:
-                    print ("colocar apenas numero!")
-                    continue
-            sessao['hora'] = nova_hora
-        else:
-            print('não encontrou')
-    limpa_tela()
+                    print("Colocar apenas número!")
+
+            # UPDATE NO BANCO
+            comando.execute(
+                """
+                UPDATE usuarios
+                SET assunto = ?, dificuldade = ?, horas = ?
+                WHERE assunto = ?
+                """,
+                (novo_assunto, nova_dificuldade, nova_hora, assunto_antigo)
+            )
+            conexao.commit()
+
+            print("Sessão atualizada com sucesso!")
+            return
+
+    print("Assunto não encontrado!")
+        
+
     
 while True:
     print('1 - Adicionar sessão')
